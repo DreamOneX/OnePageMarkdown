@@ -1,0 +1,76 @@
+name: Build & Release
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Debug APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Grant execute permission for Gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build APK (Debug)
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Rename APK for Debug
+        run: |
+          mkdir -p debug
+          cp app/build/outputs/apk/debug/app-debug.apk debug/OnePage-${{ github.ref_name }}.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: debug/OnePage-${{ github.ref_name }}.apk
+
+  tag_nightly:
+    name: Tag Nightly (only on master)
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Create Nightly Tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          TAG_NAME=nightly-$(date +'%Y%m%d')-${GITHUB_SHA::7}
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+
+  release:
+    name: Auto Release with marvinpinto
+    needs: [build, tag_nightly]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-debug-apk
+
+      - name: Auto Release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            app-debug-apk/OnePage-*.apk

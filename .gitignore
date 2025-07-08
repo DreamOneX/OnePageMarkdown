@@ -1,0 +1,22 @@
+# Kotlin / Java / Android
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+build
+
+# Android Studio
+*.apk
+*.ap_
+
+# Mac
+*.DS_Store
+
+# Log
+*.log
+
+*.orig
