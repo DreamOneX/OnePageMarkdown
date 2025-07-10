@@ -1,22 +1,21 @@
 plugins {
     id("com.android.application")
-    kotlin("android")
-    kotlin("plugin.compose")
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
+    compileSdk = 36
     namespace = "com.github.dreamonex.onepage"
-    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.github.dreamonex.onepage"
-        minSdk = 24
-        targetSdk = 34
+        minSdk = 26
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
     }
 
-    /* 统一 Java/Kotlin 目标为 17，解决 JVM target 不一致 */
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -25,28 +24,16 @@ android {
 
     buildFeatures { compose = true }
 
-    composeOptions { kotlinCompilerExtensionVersion = "1.6.10" }
+    packaging { resources.excludes += "/META-INF/{AL2.0,LGPL2.1}" }
 }
 
 dependencies {
-    /* ---------- Compose 基础 ---------- */
-    val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
-    implementation(composeBom); androidTestImplementation(composeBom)
-
-    implementation("androidx.activity:activity-compose:1.9.0")     // setContent
+    implementation(platform("androidx.compose:compose-bom:2025.06.01"))
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-core")
-    implementation("androidx.compose.material:material-icons-extended")
-    implementation("androidx.compose.runtime:runtime")
-    implementation("androidx.compose.runtime:runtime-saveable")     // rememberSaveable
-
-    /* ---------- DataStore & 协程 ---------- */
-    implementation("androidx.datastore:datastore-preferences:1.0.0")   // stringPreferencesKey
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
-
-    /* ---------- Markdown 渲染 (JitPack) ---------- */
+    implementation("androidx.activity:activity-compose:1.9.0")
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("com.google.android.material:material:1.12.0")
     implementation("com.github.jeziellago:compose-markdown:0.5.7")
-
-    /* ---------- MaterialComponents (XML 主题) ---------- */
-    implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.1")
 }

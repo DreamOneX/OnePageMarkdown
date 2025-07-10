@@ -1,34 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 已移除 package="…"，namespace 由 build.gradle.kts 管理 -->
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.github.dreamonex.onepage">
     <application
-        android:name=".MyApp"
+        android:allowBackup="true"
         android:label="OnePage Markdown"
-        android:theme="@style/Theme.OnePageMarkdown">
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
+        android:theme="@style/Theme.Material3.DayNight.NoActionBar">
+        <activity android:name=".MainActivity" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <service
-            android:name=".QuickMarkdownTileService"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"/>
-
-        <receiver
-            android:name=".MarkdownAppWidget"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_info"/>
-        </receiver>
-        <service android:name=".OverlayService" android:permission="android.permission.SYSTEM_ALERT_WINDOW" android:exported="false" />
-</application>
+    </application>
 </manifest>
