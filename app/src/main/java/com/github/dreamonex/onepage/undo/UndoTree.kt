@@ -1,37 +1,17 @@
 package com.github.dreamonex.onepage.undo
 
-/**
- * Simple undo tree that supports branching.
- * Each node stores a full snapshot string for simplicity.
- */
 class UndoTree(initial: String = "") {
-
-    private data class Node(
-        val text: String,
-        val parent: Node? = null,
-        val children: MutableList<Node> = mutableListOf()
-    )
-
+    private data class Node(val text: String, val parent: Node? = null, val children: MutableList<Node> = mutableListOf())
     private var current: Node = Node(initial)
-
-    val currentText: String
-        get() = current.text
-
-    /** Commit a new snapshot and create/advance a branch if text changed. */
     fun commit(newText: String) {
         if (newText == current.text) return
-        val node = Node(newText, current)
-        current.children.add(node)
-        current = node
+        val n = Node(newText, current)
+        current.children.add(n)
+        current = n
     }
-
-    fun canUndo(): Boolean = current.parent != null
-
-    fun undo(): String {
-        check(canUndo()) { "Nothing to undo" }
-        current = current.parent!!
-        return current.text
-    }
-
-    fun branchTexts(): List<String> = current.children.map { it.text }
+    fun canUndo() = current.parent != null
+    fun undo(): String { check(canUndo()); current = current.parent!!; return current.text }
+    fun canRedo() = current.children.isNotEmpty()
+    fun redo(idx: Int = 0): String { check(canRedo()); current = current.children[idx]; return current.text }
+    fun branchTexts() = current.children.map { it.text.take(40) }
 }
