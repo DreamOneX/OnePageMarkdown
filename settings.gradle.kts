@@ -1,9 +1,7 @@
-pluginManagement {
-    repositories { google(); mavenCentral(); maven { url = uri("https://jitpack.io") } }
-}
+pluginManagement { repositories { google(); mavenCentral(); } }
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories { google(); mavenCentral(); maven { url = uri("https://jitpack.io") } }
+  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+  repositories { google(); mavenCentral(); }
 }
-rootProject.name = "OnePageMarkdown"
+rootProject.name="OnePageMarkdown"
 include(":app")
